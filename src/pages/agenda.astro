@@ -1,0 +1,79 @@
+---
+// src/pages/agenda.astro
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import CustomCursor from '../components/CustomCursor.astro';
+---
+
+<Layout title="Agenda | Uli Vergara">
+    <CustomCursor />
+    <Header />
+
+    <main class="h-screen w-full bg-black text-white px-6 flex flex-col items-center justify-center relative overflow-hidden">
+
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] pointer-events-none animate-pulse-slow"></div>
+
+        <div class="z-10 text-center space-y-12 animate-fade-up">
+            
+            <h1 class="text-xs font-bold tracking-[0.6em] uppercase text-white/40">
+                Contacto & Bookings
+            </h1>
+
+            <div class="relative group">
+                <a href="https://instagram.com/uli_vergara_foto" target="_blank" class="block show-system-cursor">
+                    <span class="font-serif text-5xl md:text-7xl lg:text-9xl tracking-tight leading-none text-white/90 group-hover:text-white transition-colors duration-500">
+                        @uli_vergara_foto
+                    </span>
+                </a>
+                
+                <div class="h-px bg-white w-0 group-hover:w-full transition-all duration-700 ease-out mx-auto mt-4"></div>
+                
+                <div class="absolute -bottom-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                    <span class="text-white/60 text-sm tracking-[0.3em] uppercase">Enviar Mensaje Directo</span>
+                </div>
+            </div>
+
+            <p class="pt-8 text-white/30 font-light text-xs md:text-sm tracking-widest max-w-md mx-auto leading-relaxed">
+                CONSULTAS EXCLUSIVAS VÍA INSTAGRAM
+                <br>
+                <span class="text-white/20 text-[10px] mt-2 block">GUADALAJARA, MÉXICO</span>
+            </p>
+
+        </div>
+
+    </main>
+</Layout>
+
+<style>
+    /* ANIMACIÓN DE ENTRADA */
+    .animate-fade-up {
+        opacity: 0;
+        transform: translateY(40px);
+        animation: fadeUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes fadeUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ANIMACIÓN DEL FONDO (Respiración lenta) */
+    .animate-pulse-slow {
+        animation: pulseSlow 8s infinite ease-in-out;
+    }
+
+    @keyframes pulseSlow {
+        0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+        50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
+    }
+</style>
+
+<script>
+    // Solo necesitamos el page-load por si usas transiciones de vista en el futuro
+    // y para asegurar que el cursor funcione bien.
+    document.addEventListener('astro:page-load', () => {
+        // No hay lógica compleja aquí, solo visual.
+    });
+</script>

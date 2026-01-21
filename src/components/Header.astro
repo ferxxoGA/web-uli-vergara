@@ -1,0 +1,121 @@
+---
+// src/components/Header.astro
+const pathname = Astro.url.pathname;
+const isHome = pathname === '/' || pathname === '';
+
+// Definimos los items aquí para usarlos tanto en Desktop como en Móvil
+const navItems = [
+  { name: 'Bodas', href: '/bodas' },
+  { name: 'Empresas', href: '/empresas' },
+  { name: 'Eventos', href: '/eventos' },
+  { name: 'Diario', href: '/diario' },
+  { name: 'Sobre mí', href: '/sobre-mi' },
+  { name: 'Agenda', href: '/agenda' },
+];
+---
+
+<header class="fixed top-0 left-0 w-full z-50 px-6 py-6 md:px-10 md:py-12 flex justify-between items-center text-white select-none mix-blend-difference md:mix-blend-normal">
+  
+  <div class="w-auto md:w-1/4 relative z-50">
+    {isHome ? (
+      <h1 class="text-xs font-bold tracking-[0.25em] uppercase cursor-default text-white/90 hover:opacity-50 transition-opacity duration-300">
+        Uli Vergara
+      </h1>
+    ) : (
+      <a href="/" class="text-xs font-bold tracking-[0.25em] uppercase cursor-pointer text-white/90 hover:opacity-50 transition-opacity duration-300 block">
+        Uli Vergara
+      </a>
+    )}
+  </div>
+
+  <div class="hidden md:flex peer group relative justify-center items-center flex-grow h-8 z-20">
+    
+    <div class="absolute transition-all duration-300 ease-out group-hover:-translate-y-24 group-hover:opacity-0 flex items-center justify-center">
+      <div class="w-6 h-6 border border-white/80 rounded-full flex items-center justify-center">
+        <div class="w-0.5 h-0.5 bg-white rounded-full"></div>
+      </div>
+    </div>
+
+    <nav class="absolute opacity-0 -translate-y-8 pointer-events-none transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto">
+      <ul class="flex gap-6 text-[10px] font-bold tracking-[0.2em] uppercase">
+        {navItems.map(item => (
+            <li><a href={item.href} class="text-white/60 hover:text-white transition-colors block py-2">{item.name}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="hidden md:flex w-1/4 justify-end gap-8 relative z-20">
+    <a href="https://www.instagram.com/uli_vergara_foto?igsh=bHJ4MTBvc2M0bDdp" target="_blank" rel="noopener noreferrer" class="hover:opacity-60 transition-opacity duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+    </a>
+  </div>
+
+  <button id="menu-btn" class="md:hidden z-50 focus:outline-none group relative">
+     <div class="space-y-1.5 cursor-pointer relative w-6 h-4">
+        <span class="absolute top-0 right-0 block w-6 h-0.5 bg-white transition-transform duration-300 group-[.is-open]:rotate-45 group-[.is-open]:translate-y-2"></span>
+        <span class="absolute top-2 right-0 block w-6 h-0.5 bg-white transition-opacity duration-300 group-[.is-open]:opacity-0"></span>
+        <span class="absolute top-4 right-0 block w-6 h-0.5 bg-white transition-transform duration-300 group-[.is-open]:-rotate-45 group-[.is-open]:-translate-y-2"></span>
+    </div>
+  </button>
+
+  <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/20 to-transparent -z-10 opacity-0 peer-hover:opacity-100 transition-opacity duration-500 pointer-events-none hidden md:block"></div>
+
+</header>
+
+<div id="mobile-menu" class="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center translate-x-full transition-transform duration-500 ease-expo md:hidden">
+    <nav class="flex flex-col gap-8 text-center">
+        {navItems.map((item, index) => (
+            <a 
+                href={item.href} 
+                class="mobile-link text-2xl font-serif tracking-widest uppercase text-white/80 hover:text-white transition-colors opacity-0 translate-y-4"
+                style={`transition-delay: ${index * 50}ms`}
+            >
+                {item.name}
+            </a>
+        ))}
+    </nav>
+    
+    <a href="https://www.instagram.com/uli_vergara_foto?igsh=bHJ4MTBvc2M0bDdp" target="_blank" class="absolute bottom-12 text-white/50 hover:text-white transition-colors mobile-link opacity-0 translate-y-4" style="transition-delay: 300ms">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+    </a>
+</div>
+
+<style>
+    /* Curva de animación "Expo" */
+    .ease-expo { transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1); }
+    
+    /* Clase activa del menú */
+    .menu-open { transform: translateX(0) !important; }
+    
+    /* Animación de entrada de los links */
+    .menu-open .mobile-link {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+</style>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const btn = document.getElementById('menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const links = document.querySelectorAll('.mobile-link');
+
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('is-open');
+                menu.classList.toggle('menu-open');
+                document.body.style.overflow = menu.classList.contains('menu-open') ? 'hidden' : '';
+            });
+
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    btn.classList.remove('is-open');
+                    menu.classList.remove('menu-open');
+                    document.body.style.overflow = '';
+                });
+            });
+        }
+    });
+</script>

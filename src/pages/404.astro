@@ -1,0 +1,28 @@
+---
+// src/pages/404.astro
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import CustomCursor from '../components/CustomCursor.astro';
+---
+
+<Layout title="404 | No Encontrado">
+    <CustomCursor />
+    <Header />
+
+    <main class="h-screen w-full bg-black text-white flex flex-col items-center justify-center text-center px-6">
+        
+        <h1 class="text-[120px] md:text-[200px] font-serif leading-none opacity-10 select-none">
+            404
+        </h1>
+        
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <p class="text-xs font-bold tracking-[0.3em] uppercase mb-8">
+                Página no encontrada
+            </p>
+            <a href="/" class="border border-white/30 px-8 py-3 text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-white hover:text-black hover:border-white transition-all duration-500 show-system-cursor">
+                Volver al Inicio
+            </a>
+        </div>
+
+    </main>
+</Layout>

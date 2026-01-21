@@ -1,0 +1,149 @@
+---
+// src/pages/sobre-mi.astro
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import CustomCursor from '../components/CustomCursor.astro';
+import { Image } from 'astro:assets';
+
+// Usamos una imagen vertical para el retrato (ej. img4 o img12 de las que tenemos)
+// Cuando tengas la foto real de Uli, asegúrate de que sea vertical (Portrait)
+import portraitImg from '../assets/images/imgsobremi.jpg'; 
+---
+
+<Layout title="Sobre Mí | Uli Vergara">
+    <CustomCursor />
+    <Header />
+
+    <main class="min-h-screen w-full bg-black text-white px-6 md:px-12 pt-32 pb-20 trigger-custom-cursor">
+        
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-24 items-start">
+            
+            <div class="md:col-span-5 relative md:sticky md:top-32 h-[70vh] md:h-[80vh] w-full overflow-hidden reveal-image">
+                <Image 
+                    src={portraitImg} 
+                    alt="Uli Vergara Retrato" 
+                    class="w-full h-full object-cover object-center grayscale hover:grayscale-0 transition-all duration-1000 ease-out"
+                    width={800}
+                    quality="high"
+                    loading="eager"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
+            </div>
+
+            <div class="md:col-span-7 flex flex-col justify-center py-10 md:py-0 space-y-12">
+                
+                <div class="reveal-text">
+                    <h1 class="text-xs font-bold tracking-[0.5em] uppercase text-white/50 mb-6">
+                        El Fotógrafo
+                    </h1>
+                    <h2 class="text-5xl md:text-8xl font-serif tracking-wide uppercase leading-none">
+                        Uli<br>Vergara
+                    </h2>
+                </div>
+
+                <div class="space-y-8 text-white/80 font-light leading-relaxed tracking-wide text-sm md:text-base max-w-xl reveal-text delay-100">
+                    <p>
+                        Creo firmemente que las mejores fotografías no se planean, se sienten. Mi enfoque no se trata de poses perfectas ni guiones forzados, sino de estar presente, observar y capturar la honestidad del momento tal como sucede.
+                    </p>
+                    <p>
+                        Con una base en el fotoperiodismo y una pasión por la estética cinematográfica, busco crear imágenes que se sientan atemporales. Me obsesiona la luz natural, las sombras profundas y esa fracción de segundo donde la emoción es real.
+                    </p>
+                    <p>
+                        Ya sea una boda, un evento corporativo o un retrato personal, mi objetivo es el mismo: contar tu historia con elegancia, discreción y una mirada artística.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-8 border-t border-white/20 pt-8 reveal-text delay-200">
+                    <div>
+                        <h3 class="text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-2">Base</h3>
+                        <p class="font-serif text-lg">Guadalajara, MX</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-2">Enfoque</h3>
+                        <p class="font-serif text-lg">Documental & Fine Art</p>
+                    </div>
+                </div>
+
+                <div class="pt-8 reveal-text delay-300">
+                     <Image 
+                        src={portraitImg} 
+                        alt="Firma" 
+                        class="w-24 h-auto opacity-50 invert hidden" 
+                    />
+                    <a href="/agenda" class="inline-block border-b border-white pb-1 text-sm tracking-[0.3em] uppercase hover:text-white/50 transition-colors">
+                        Trabajemos Juntos
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+</Layout>
+
+<style>
+    /* ANIMACIÓN DE ENTRADA 
+       Hacemos algo diferente aquí: El texto sube, la imagen se revela.
+    */
+
+    /* Estado inicial Texto */
+    .reveal-text {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 1s ease-out, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    
+    /* Estado final Texto */
+    .reveal-text.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Delays para efecto cascada en el texto */
+    .delay-100 { transition-delay: 0.1s; }
+    .delay-200 { transition-delay: 0.2s; }
+    .delay-300 { transition-delay: 0.3s; }
+
+    /* Animación Imagen: Un clip-path que se abre */
+    .reveal-image {
+        opacity: 0;
+        transform: scale(0.95);
+        filter: blur(10px);
+        transition: opacity 1.5s ease-out, transform 1.5s ease-out, filter 1.5s ease-out;
+    }
+
+    .reveal-image.is-visible {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0px);
+    }
+</style>
+
+<script>
+    // SCRIPT PROTEGIDO (astro:page-load)
+    // Para que funcione al navegar desde Home o Bodas sin recargar.
+    document.addEventListener('astro:page-load', () => {
+
+        const textElements = document.querySelectorAll('.reveal-text');
+        const imgElements = document.querySelectorAll('.reveal-image');
+
+        // Combinamos todos los elementos que queremos animar
+        const allElements = [...textElements, ...imgElements];
+
+        if (allElements.length === 0) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Animación de una sola vez
+                }
+            });
+        }, {
+            threshold: 0.1, // Se activa apenas se ve un 10%
+            rootMargin: "0px"
+        });
+
+        allElements.forEach(el => observer.observe(el));
+    });
+</script>

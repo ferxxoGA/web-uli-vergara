@@ -1,0 +1,187 @@
+---
+// src/components/Hero.astro
+import { Image } from 'astro:assets';
+
+// 1. IMPORTAMOS LAS IMÁGENES
+import img1 from '../assets/images/img1.jpg';
+import img2 from '../assets/images/img2.jpg';
+import img3 from '../assets/images/img3.jpg';
+import img4 from '../assets/images/img4.jpg';
+import img5 from '../assets/images/img5.jpg';
+import img6 from '../assets/images/img6.jpg';
+import img7 from '../assets/images/img7.jpg';
+import img8 from '../assets/images/img8.jpg';
+import img9 from '../assets/images/img9.jpg';
+import img10 from '../assets/images/img10.jpg';
+import img11 from '../assets/images/img11.jpg';
+import img12 from '../assets/images/img12.jpg';
+
+const images = [
+  img1, img2, img3, img4, img5, img6, 
+  img7, img8, img9, img10, img11, img12
+];
+---
+
+<section class="relative w-full h-screen overflow-hidden bg-black trigger-custom-cursor" id="hero-slider">
+  
+  {images.map((img, index) => (
+    <div 
+      class="absolute inset-0 w-full h-full slide will-change-transform"
+      data-index={index}
+    >
+      <Image 
+        src={img} 
+        alt={`Uli Vergara Photography ${index + 1}`} 
+        class="w-full h-full object-cover"
+        quality="high"
+        format="webp"
+        loading="eager"
+      />
+      
+      <div class="absolute inset-0 bg-black/10"></div>
+    </div>
+  ))}
+
+  <button id="prev-slide" class="absolute top-1/2 left-10 -translate-y-1/2 z-30 p-4 text-white/70 hover:text-white transition-colors duration-300 focus:outline-none group cursor-none">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform duration-300"><polyline points="15 18 9 12 15 6"></polyline></svg>
+  </button>
+  <button id="next-slide" class="absolute top-1/2 right-10 -translate-y-1/2 z-30 p-4 text-white/70 hover:text-white transition-colors duration-300 focus:outline-none group cursor-none">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform duration-300"><polyline points="9 18 15 12 9 6"></polyline></svg>
+  </button>
+
+  <div class="absolute bottom-12 w-full text-center z-30 pointer-events-none">
+      <span id="slide-counter" class="text-[10px] font-bold tracking-[0.2em] text-white/80 uppercase"></span>
+  </div>
+
+</section>
+
+<script>
+  // SOLUCIÓN: Envolvemos TODO en astro:page-load
+  document.addEventListener('astro:page-load', () => {
+
+      const sliderContainer = document.getElementById('hero-slider'); 
+      
+      // Verificación de seguridad: Si no estamos en la página del slider, salimos.
+      if (!sliderContainer) return;
+
+      const slides = document.querySelectorAll('.slide');
+      const nextBtn = document.getElementById('next-slide');
+      const prevBtn = document.getElementById('prev-slide');
+      const counter = document.getElementById('slide-counter');
+      
+      let currentIndex = 0;
+      const totalSlides = slides.length;
+      let isAnimating = false;
+      
+      // Variables para el touch (celular)
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      const duration = 1000; 
+      const easing = "cubic-bezier(1, 1, 1, 1)"; 
+
+      function updateCounter() {
+        if(counter) {
+          const currentFmt = (currentIndex + 1).toString().padStart(2, '0');
+          const totalFmt = totalSlides.toString().padStart(2, '0');
+          counter.innerText = `Series ${currentFmt} / ${totalFmt}`;
+        }
+      }
+
+      function initPositions() {
+        slides.forEach((slide, index) => {
+          const el = slide as HTMLElement; 
+          el.style.zIndex = '0'; 
+          if (index === currentIndex) {
+            el.style.transform = 'translateX(0)';
+            el.style.zIndex = '10'; 
+          } else {
+            el.style.transform = 'translateX(100%)'; 
+          }
+        });
+        updateCounter();
+      }
+
+      function moveSlide(direction) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const currentSlide = slides[currentIndex] as HTMLElement;
+        let nextIndex;
+        
+        const transitionStyle = `transform ${duration}ms ${easing}`;
+        currentSlide.style.transition = transitionStyle;
+
+        if (direction === 'next') {
+          nextIndex = (currentIndex + 1) % totalSlides;
+          const nextSlide = slides[nextIndex] as HTMLElement;
+
+          currentSlide.style.zIndex = '10';
+          nextSlide.style.zIndex = '20';
+
+          nextSlide.style.transition = 'none';
+          nextSlide.style.transform = 'translateX(100%)';
+          nextSlide.offsetHeight; 
+
+          nextSlide.style.transition = transitionStyle;
+          nextSlide.style.transform = 'translateX(0)';
+          currentSlide.style.transform = 'translateX(-25%)';
+
+        } else { 
+          nextIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+          const prevSlide = slides[nextIndex] as HTMLElement;
+
+          currentSlide.style.zIndex = '10';
+          prevSlide.style.zIndex = '20';
+
+          prevSlide.style.transition = 'none';
+          prevSlide.style.transform = 'translateX(-100%)';
+          prevSlide.offsetHeight;
+
+          prevSlide.style.transition = transitionStyle;
+          prevSlide.style.transform = 'translateX(0)';
+          currentSlide.style.transform = 'translateX(25%)';
+        }
+
+        setTimeout(() => {
+          currentSlide.style.transition = 'none';
+          currentSlide.style.transform = 'translateX(100%)'; 
+          currentSlide.style.zIndex = '0';
+
+          currentIndex = nextIndex;
+          updateCounter();
+          
+          slides[currentIndex].style.transition = '';
+          slides[currentIndex].style.zIndex = '10'; 
+          
+          isAnimating = false;
+        }, duration);
+      }
+
+      // --- LÓGICA DE SWIPE (TACTIL) ---
+      function handleGesture() {
+        if (touchEndX < touchStartX - 50) {
+            moveSlide('next'); 
+        }
+        if (touchEndX > touchStartX + 50) {
+            moveSlide('prev'); 
+        }
+      }
+
+      sliderContainer.addEventListener('touchstart', (e: any) => {
+          touchStartX = e.changedTouches[0].screenX;
+      }, {passive: true});
+
+      sliderContainer.addEventListener('touchend', (e: any) => {
+          touchEndX = e.changedTouches[0].screenX;
+          handleGesture();
+      }, {passive: true});
+      
+      // Inicializar
+      initPositions();
+
+      nextBtn?.addEventListener('click', () => moveSlide('next'));
+      prevBtn?.addEventListener('click', () => moveSlide('prev'));
+  
+  }); // Cerramos el astro:page-load
+</script>

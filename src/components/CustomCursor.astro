@@ -1,0 +1,63 @@
+---
+// src/components/CustomCursor.astro
+---
+
+<div 
+  id="custom-cursor" 
+  class="fixed top-0 left-0 w-5 h-5 pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 mix-blend-difference hidden md:flex items-center justify-center transition-opacity duration-200 ease-out opacity-0"
+>
+  <div class="w-full h-[1.5px] bg-white"></div>
+  <div class="h-full w-[1.5px] bg-white absolute top-0 left-1/2 -translate-x-1/2"></div>
+</div>
+
+<script>
+  // Definimos la función de movimiento fuera para poder limpiarla y evitar duplicados
+  function handleMouseMove(e) {
+    const cursor = document.getElementById('custom-cursor');
+    if (cursor) {
+      cursor.style.left = `${e.clientX}px`;
+      cursor.style.top = `${e.clientY}px`;
+    }
+  }
+
+  // Función principal que inicializa todo
+  function initCustomCursor() {
+    const cursor = document.getElementById('custom-cursor');
+
+    // 1. Limpieza y asignación de movimiento
+    // Quitamos el listener anterior por si acaso, para no tener doble evento
+    document.removeEventListener('mousemove', handleMouseMove); 
+    document.addEventListener('mousemove', handleMouseMove);
+
+    // 2. Lógica de Zonas (Esto es lo que fallaba al navegar)
+    // Buscamos las zonas NUEVAS de la página actual
+    const zones = document.querySelectorAll('.trigger-custom-cursor');
+
+    zones.forEach(zone => {
+      // Al ENTRAR en la zona
+      zone.addEventListener('mouseenter', () => {
+        (zone as HTMLElement).style.cursor = 'none';
+        cursor?.classList.remove('opacity-0');
+        cursor?.classList.add('opacity-100');
+      });
+
+      // Al SALIR de la zona
+      zone.addEventListener('mouseleave', () => {
+        (zone as HTMLElement).style.cursor = 'auto';
+        cursor?.classList.remove('opacity-100');
+        cursor?.classList.add('opacity-0');
+      });
+
+      // Efecto en botones internos
+      const internalButtons = zone.querySelectorAll('button, a');
+      internalButtons.forEach(btn => {
+        btn.addEventListener('mouseenter', () => cursor?.classList.add('rotate-90', 'scale-150'));
+        btn.addEventListener('mouseleave', () => cursor?.classList.remove('rotate-90', 'scale-150'));
+      });
+    });
+  }
+
+  // LA SOLUCIÓN DEL BUG:
+  // "astro:page-load" se asegura de ejecutar este código CADA VEZ que cambias de página.
+  document.addEventListener('astro:page-load', initCustomCursor);
+</script>
