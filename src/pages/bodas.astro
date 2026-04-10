@@ -49,12 +49,12 @@ const portfolioItems = Object.entries(imageFiles)
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 trigger-custom-cursor">
 
             {portfolioItems.map((item) => (
-                <div class="relative group rounded-sm overflow-hidden reveal-on-scroll aspect-[2/3]">
-                    
+                <div class="relative group rounded-sm overflow-hidden reveal-on-scroll">
+
                     <Image
                         src={item.img}
                         alt={item.alt}
-                        class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                        class="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                         width={800} 
                         quality="mid"
                         loading="lazy"
