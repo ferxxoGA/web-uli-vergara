@@ -23,11 +23,7 @@ const portfolioItems = Object.entries(imageFiles)
       order: number
     };
   })
-  .sort((a, b) => a.order - b.order);
-
-const col1 = portfolioItems.filter((_, i) => i % 3 === 0);
-const col2 = portfolioItems.filter((_, i) => i % 3 === 1);
-const col3 = portfolioItems.filter((_, i) => i % 3 === 2);
+  .sort((a, b) => a.order - b.order); // Las ordenamos del 1 al 52
 ---
 
 <Layout title="Bodas | Uli Vergara">
@@ -50,42 +46,24 @@ const col3 = portfolioItems.filter((_, i) => i % 3 === 2);
         </div>
 
 
-        <!-- Mobile: columna única en orden -->
-        <section class="flex flex-col gap-4 md:hidden trigger-custom-cursor">
+        <section class="columns-1 md:columns-2 lg:columns-3 gap-4 md:gap-8 space-y-4 md:space-y-8 trigger-custom-cursor">
+            
             {portfolioItems.map((item) => (
                 <div class="break-inside-avoid relative group rounded-sm overflow-hidden reveal-on-scroll">
-                    <Image src={item.img} alt={item.alt} class="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]" width={800} quality="mid" loading="lazy" />
+                    
+                    <Image 
+                        src={item.img} 
+                        alt={item.alt}
+                        class="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                        width={800} 
+                        quality="mid"
+                        loading="lazy"
+                    />
+                    
                     <div class="absolute inset-0 bg-black/10 transition-opacity duration-500 group-hover:opacity-0 pointer-events-none"></div>
                 </div>
             ))}
-        </section>
 
-        <!-- md+: 3 columnas flex con distribución fila a fila (1,2,3 arriba) -->
-        <section class="hidden md:flex gap-4 lg:gap-8 trigger-custom-cursor">
-            <div class="flex-1 flex flex-col gap-4 lg:gap-8">
-                {col1.map((item) => (
-                    <div class="break-inside-avoid relative group rounded-sm overflow-hidden reveal-on-scroll">
-                        <Image src={item.img} alt={item.alt} class="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]" width={800} quality="mid" loading="lazy" />
-                        <div class="absolute inset-0 bg-black/10 transition-opacity duration-500 group-hover:opacity-0 pointer-events-none"></div>
-                    </div>
-                ))}
-            </div>
-            <div class="flex-1 flex flex-col gap-4 lg:gap-8">
-                {col2.map((item) => (
-                    <div class="break-inside-avoid relative group rounded-sm overflow-hidden reveal-on-scroll">
-                        <Image src={item.img} alt={item.alt} class="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]" width={800} quality="mid" loading="lazy" />
-                        <div class="absolute inset-0 bg-black/10 transition-opacity duration-500 group-hover:opacity-0 pointer-events-none"></div>
-                    </div>
-                ))}
-            </div>
-            <div class="flex-1 flex flex-col gap-4 lg:gap-8">
-                {col3.map((item) => (
-                    <div class="break-inside-avoid relative group rounded-sm overflow-hidden reveal-on-scroll">
-                        <Image src={item.img} alt={item.alt} class="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]" width={800} quality="mid" loading="lazy" />
-                        <div class="absolute inset-0 bg-black/10 transition-opacity duration-500 group-hover:opacity-0 pointer-events-none"></div>
-                    </div>
-                ))}
-            </div>
         </section>
         
         <div class="mt-32 text-center reveal-on-scroll">
